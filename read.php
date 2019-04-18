@@ -10,11 +10,11 @@ function updateTask($arrayStr)
            echo "<tr>
                 <td>" . $data[0] . "</td>
                 <td>" . $data[1] . "</td>
-                <td>
+                <td bgcolor='orange'>
                     <a href='delete.php?DelLnk=" . $i . "' >X</a>
                 </td>
-                 <td>
-                    <a href='modify.php?ModLnk=" . $i . "' >M</a>
+                 <td bgcolor='red'>
+                    <a href='modify .php?ModLnk=" . $i . "' >M</a>
                 </td>
              </tr>";
        }
@@ -26,7 +26,7 @@ function updateTask($arrayStr)
                 <td bgcolor='orange'>
                     <a href='delete.php?DelLnk=" . $i . "' >X</a>
                 </td>
-                 <td bgcolor='orange'>
+                 <td bgcolor='red'>
                     <a href='modify.php?ModLnk=" . $i . "' >M</a>
                 </td>
              </tr>";
@@ -49,6 +49,16 @@ function updateTask($arrayStr)
 
 function readTask()
 {
+
+//    require_once 'connection.php';
+//
+//
+//    $link = mysqli_connect($host, $user, $password, $database);
+//    $query ="SELECT * FROM tasks WHERE Id == ''";
+//    $result = mysqli_query($link, $query);
+
     $arrayStr = file('data.txt');
     updateTask($arrayStr);
+
+//    mysqli_close($link);
 }

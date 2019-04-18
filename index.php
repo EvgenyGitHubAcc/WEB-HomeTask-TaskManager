@@ -30,6 +30,9 @@ if(!array_key_exists ('auth', $_COOKIE))
     <input name="LogoutBtn" value="Выйти" type="submit">
 </form>
 
+<form action='delete.php' method='post'>
+    <input name='DelProfBtn' value='Удалить профиль' type='submit'>
+</form>
 
 <table name="TaskTable" border="1">
     <tr>
