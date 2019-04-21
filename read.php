@@ -1,64 +1,73 @@
 <?php
 
-function updateTask($arrayStr)
+session_start();
+
+function updateTask()
 {
+    require_once 'connection.php';
+
+    $db = mysqli_connect($host, $user, $password, $database);
+
+    $query ="SELECT * FROM tasks WHERE UserId = ". $_SESSION['Id'];
+
+//    echo "<pre>";
+//    print_r($result);
+//    exit();
+
+    if(!$result = mysqli_query($db, $query))
+    {
+        exit();
+    }
+
+    $arrayStr = [];
+
+    while($row = mysqli_fetch_assoc($result))
+    {
+        $arrayStr[] = $row;
+    }
+
+    mysqli_close($db);
+
     for($i = 0; $i < count($arrayStr); ++$i)
    {
-       $data = explode(";", $arrayStr[$i]);
-       if(strtotime($data[0]) - time() > 60 * 60 * 24)
+       if($arrayStr[$i]['DeadLine'] - time() > 60 * 60 * 24)
        {
            echo "<tr>
-                <td>" . $data[0] . "</td>
-                <td>" . $data[1] . "</td>
-                <td bgcolor='orange'>
-                    <a href='delete.php?DelLnk=" . $i . "' >X</a>
+                <td>" . date("d.m.Y", (int)$arrayStr[$i]['DeadLine']) . "</td>
+                <td>" . $arrayStr[$i]['Task'] . "</td>
+                <td>
+                    <a href='delete.php?DelLnk=" . $arrayStr[$i]['Id'] . "' >X</a>
                 </td>
-                 <td bgcolor='red'>
-                    <a href='modify .php?ModLnk=" . $i . "' >M</a>
+                 <td>
+                    <a href='modify .php?ModLnk=" . $arrayStr[$i]['Id'] . "' >M</a>
                 </td>
              </tr>";
        }
-       else if(strtotime($data[0]) - time() < 60 * 60 * 24 && strtotime($data[0]) - time() > 0)
+       else if($arrayStr[$i]['DeadLine'] - time() < 60 * 60 * 24 && $arrayStr[$i]['DeadLine'] - time() > 0)
        {
            echo "<tr>
-                <td bgcolor='orange'>" . $data[0] . "</td>
-                <td bgcolor='orange'>" . $data[1] . "</td>
+                <td bgcolor='orange'>" . date("d.m.Y", (int)$arrayStr[$i]['DeadLine']) . "</td>
+                <td bgcolor='orange'>" . $arrayStr[$i]['Task'] . "</td>
                 <td bgcolor='orange'>
-                    <a href='delete.php?DelLnk=" . $i . "' >X</a>
+                    <a href='delete.php?DelLnk=" . $arrayStr[$i]['Id'] . "' >X</a>
                 </td>
                  <td bgcolor='red'>
-                    <a href='modify.php?ModLnk=" . $i . "' >M</a>
+                    <a href='modify.php?ModLnk=" . $arrayStr[$i]['Id'] . "' >M</a>
                 </td>
              </tr>";
        }
        else
        {
            echo "<tr>
-                <td bgcolor='red'>" . $data[0] . "</td>
-                <td bgcolor='red'>" . $data[1] . "</td>
+                <td bgcolor='red'>" . date("d.m.Y", (int)$arrayStr[$i]['DeadLine']) . "</td>
+                <td bgcolor='red'>" . $arrayStr[$i]['Task'] . "</td>
                 <td bgcolor='red'>
-                    <a href='delete.php?DelLnk=" . $i . "' >X</a>
+                    <a href='delete.php?DelLnk=" . $arrayStr[$i]['Id'] . "' >X</a>
                 </td>
                  <td bgcolor='red'>
-                    <a href='modify.php?ModLnk=" . $i . "' >M</a>
+                    <a href='modify.php?ModLnk=" . $arrayStr[$i]['Id'] . "' >M</a>
                 </td>
              </tr>";
        }
    }
-}
-
-function readTask()
-{
-
-//    require_once 'connection.php';
-//
-//
-//    $link = mysqli_connect($host, $user, $password, $database);
-//    $query ="SELECT * FROM tasks WHERE Id == ''";
-//    $result = mysqli_query($link, $query);
-
-    $arrayStr = file('data.txt');
-    updateTask($arrayStr);
-
-//    mysqli_close($link);
 }

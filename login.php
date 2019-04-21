@@ -2,7 +2,16 @@
 
 require_once 'connection.php';
 
+session_start();
+
 $db = mysqli_connect($host, $user, $password, $database);
+
+//if(isset($_COOKIE['auth']))
+//{
+//    $_SESSION['Id'] = $_COOKIE['auth'];
+//    header('location: index.php');
+//    exit();
+//}
 
 if(isset($_POST['RegisterBtn']))
 {
@@ -11,7 +20,10 @@ if(isset($_POST['RegisterBtn']))
 
 if(isset($_POST['LogoutBtn']))
 {
-    setcookie("auth",'0', time() - 1);
+    if(!isset($_COOKIE['auth']))
+    {
+        setcookie("auth",'0', time() - 1);
+    }
     if (isset($_SESSION['Id']))
     {
         session_destroy();
@@ -27,20 +39,13 @@ if(isset($_POST['SaveBtn']))
     {
         if($_POST['Login'] == $row['Login'] && $_POST['Pass'] == $row['Password'])
         {
-            session_start();
-
             if (!isset($_SESSION['Id']))
             {
                 $_SESSION['Id'] = $row['Id'];
             }
-//            print_r($_SESSION);
             if(isset($_POST['RmbChBox']))
             {
-                setcookie("auth",'ok', time() + 60*60*24*7);
-            }
-            else
-            {
-                setcookie("auth",'ok', time() + 60*60);
+                setcookie("auth", $row['Id'], time() + 60*60*24*7);
             }
             header('location: index.php');
             exit();

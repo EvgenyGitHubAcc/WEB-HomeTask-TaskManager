@@ -2,6 +2,8 @@
 
 require_once 'read.php';
 
+session_start();
+
 if (isset($_GET['ModLnk']))
 {
     fillFields($_GET['ModLnk']);
@@ -15,20 +17,34 @@ if (isset($_POST['SaveBtn']))
 
 function fillFields($rowNumber)
 {
-    $arrayStr = file('data.txt');
-    $data = explode(";", $arrayStr[$rowNumber]);
+    require_once 'connection.php';
+    $db = mysqli_connect($host, $user, $password, $database);
+
+    $query = "SELECT * FROM `tasks` WHERE Id = " . $rowNumber;
+
+    $result = mysqli_fetch_assoc(mysqli_query($db, $query));
+
+    mysqli_close($db);
+
     echo '<form action="modify.php" method="post">
         <input type="hidden" name="RowNumber" value="' . $rowNumber . '">
-        <input type="date" name="Date" value="' . $data[0] . '">
-        <input type="text" name="Task" value="' . $data[1] . '">
+        <input type="date" name="Date" value="' . date("Y-m-d", (int)$result['DeadLine']) . '">
+        <input type="text" name="Task" value="' . $result['Task'] . '">
         <input name="SaveBtn" value="Сохранить" type="submit">
         </form>';
 }
 
 function modifyTask($rowNumber)
 {
-    $arrayStr = file('data.txt');
-    $arrayStr[$rowNumber] = $_POST['Date'] . ";" . $_POST['Task'] . PHP_EOL;
-    file_put_contents("data.txt", $arrayStr);
-    updateTask($arrayStr);
+    require_once 'connection.php';
+    $db = mysqli_connect($host, $user, $password, $database);
+
+    $query = "UPDATE `tasks`
+            SET DeadLine = " .  strtotime($_POST['Date']) . ", 
+                Task = '" .  $_POST['Task'] . "'
+            WHERE Id = " . $rowNumber;
+    mysqli_query($db, $query);
+    mysqli_close($db);
+    updateTask();
+
 }

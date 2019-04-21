@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 if (isset($_POST['AddBtn']))
 {
     if($_POST)
@@ -15,11 +17,25 @@ function addTask()
     {
         if(strtotime($_POST['Date']))
         {
-            $arrayStr = [];
-            $arrayStr = file('data.txt');
-            array_push($arrayStr, $_POST['Date'] . ";" .  $_POST['Task'] . PHP_EOL);
-            file_put_contents("data.txt", $arrayStr);
-            updateTask($arrayStr);
+            require_once 'connection.php';
+            $db = mysqli_connect($host, $user, $password, $database);
+
+            $query ="SELECT COUNT(*) AS `COUNT` FROM tasks";
+            $taskNumber = mysqli_fetch_row(mysqli_query($db, $query))[0];
+
+//            echo "<pre>";
+//            print_r($taskNumber);
+//            exit();
+
+            $query ="INSERT INTO `tasks` (`UserId`, `DeadLine`, `Task`) 
+                    VALUES  (
+                    '" . $_SESSION['Id'] . "', 
+                    '" . strtotime($_POST['Date']) . "',
+                    '" . $_POST['Task'] . "')";
+                    
+            mysqli_query($db, $query);
+            mysqli_close($db);
+            updateTask();
         }
     }
 }

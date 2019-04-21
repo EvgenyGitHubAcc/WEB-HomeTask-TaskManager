@@ -5,10 +5,10 @@ error_reporting(E_ALL);
 
 require_once 'read.php';
 
-if(!array_key_exists ('auth', $_COOKIE))
-{
-    header('location: login.php');
-}
+//if(!array_key_exists ('auth', $_COOKIE))
+//{
+//    header('location: login.php');
+//}
 
 ?>
 
@@ -20,7 +20,6 @@ if(!array_key_exists ('auth', $_COOKIE))
 <body>
 
 <form action="add.php" method="post">
-<!--    <input type="text" name="Date" placeholder="Введите дату">-->
     <input type="date" name="Date" value="2019-01-01">
     <input type="text" name="Task" placeholder="Введите задание">
     <input name="AddBtn" value="Добавить" type="submit">
@@ -42,7 +41,7 @@ if(!array_key_exists ('auth', $_COOKIE))
         <th>Редактирование</th>
     </tr>
 
-    <?php readTask();?>
+    <?php updateTask();?>
 
 </table>
 </body>
